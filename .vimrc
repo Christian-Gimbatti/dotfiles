@@ -26,6 +26,8 @@ Plug 'https://github.com/BurntSushi/ripgrep'
 Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-fugitive' "Git tools
 Plug 'mhinz/vim-signify'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'easymotion/vim-easymotion'
 " Plug 'ryanoasis/vim-devicons'
 call plug#end()
 
@@ -66,21 +68,43 @@ nnoremap <C-F> :Rg<CR>
 map * *``
 
 " nnoremap <C-w> :tabclose<CR>
-nnoremap <C-n> :tabnew<CR>
+" nnoremap <C-n> :tabnew<CR>
 noremap <C-S-PageUp>  :-tabmove<CR>
 noremap <C-S-PageDown>  :+tabmove<CR>
 nnoremap <C-j> :move +1<CR>
 nnoremap <C-k> :move -2<CR>
 
 nnoremap ,hp :SignifyHunkDiff<CR>
+nnoremap = :SignifyHunkDiff<CR>
 nnoremap ,hu :SignifyHunkUndo<CR>
 cabbrev q <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'close' : 'q')<CR>
 
+let g:EasyMotion_do_mapping = 0 " Disable default mappings
+let g:EasyMotion_smartcase = 1
+nmap f <Plug>(easymotion-overwin-f)
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
+
+
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+autocmd ColorScheme * hi multiple_cursors_cursor term=reverse cterm=reverse gui=reverse
+autocmd CursorHold * silent call CocActionAsync('highlight')
+nmap <F2> <Plug>(coc-rename)
 
 " THEME
 color dracula
 
 :set termguicolors
+set signcolumn=yes
 syntax on
 set tabstop=4
 set softtabstop=4
