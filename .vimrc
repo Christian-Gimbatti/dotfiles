@@ -21,7 +21,7 @@ Plug 'vim-airline/vim-airline-themes' "Applicable themes
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'scrooloose/nerdtree', { 'on':  ['NERDTreeToggle','NERDTreeFind']}
 Plug 'https://github.com/BurntSushi/ripgrep'
 Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-fugitive' "Git tools
@@ -72,6 +72,9 @@ noremap <C-S-PageDown>  :+tabmove<CR>
 nnoremap <C-j> :move +1<CR>
 nnoremap <C-k> :move -2<CR>
 
+nnoremap ,hp :SignifyHunkDiff<CR>
+nnoremap ,hu :SignifyHunkUndo<CR>
+cabbrev q <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'close' : 'q')<CR>
 
 
 " THEME
@@ -81,6 +84,7 @@ color dracula
 syntax on
 set tabstop=4
 set softtabstop=4
+set shiftwidth=4
 "" set expandtab       " tabs are spaces
 set number
 set showcmd
