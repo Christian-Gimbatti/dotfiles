@@ -60,6 +60,7 @@ let NERDTreeMinimalUI = 1
 
 
 " KEYMAP
+let mapleader = ","
 let $FZF_DEFAULT_COMMAND = 'rg --files '
 set encoding=UTF-8
 set updatetime=300
@@ -84,6 +85,21 @@ inoremap <C-j> <Esc>:m .+1<CR>==gi
 inoremap <C-k> <Esc>:m .-2<CR>==gi
 vnoremap <C-j> :m '>+1<CR>gv=gv
 vnoremap <C-k> :m '<-2<CR>gv=gv
+
+nmap <leader>* *cgn
+nnoremap <C-s> :w<CR>
+
+
+" screen movement 
+nnoremap <leader>h <C-W>h
+nnoremap <leader>l <C-W>l
+nnoremap <leader>j <C-W>j
+nnoremap <leader>k <C-W>k
+
+nnoremap <leader>H <C-W>H
+nnoremap <leader>L <C-W>L
+nnoremap <leader>J <C-W>J
+nnoremap <leader>K <C-W>K
 
 " tab indent
 nnoremap <Tab> >>_
