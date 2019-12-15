@@ -15,9 +15,9 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'Yggdroot/indentLine'
+Plug 'vim-scripts/argtextobj.vim'
+Plug 'michaeljsmith/vim-indent-object'
 
-" Plug 'vim-airline/vim-airline' "Status bar
-" Plug 'vim-airline/vim-airline-themes' "Applicable themes
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -27,7 +27,6 @@ Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-fugitive' "Git tools
 Plug 'mhinz/vim-signify'
 Plug 'terryma/vim-multiple-cursors'
-Plug 'easymotion/vim-easymotion'
 Plug 'tpope/vim-surround'
 Plug 'mattn/emmet-vim'
 Plug 'stevearc/vim-arduino'
@@ -53,7 +52,7 @@ set showmatch           " highlight matching [{()}]
 set ignorecase          " ignore case when searching
 set incsearch           " search as characters are entered
 set hlsearch            " highlight matches
-set clipboard=unnamed
+set clipboard=unnamedplus
 
 let NERDTreeQuitOnOpen = 1
 let NERDTreeMinimalUI = 1
@@ -119,47 +118,6 @@ xnoremap il g_o^
 onoremap il :normal vil<CR>
 xnoremap al $o^
 onoremap al :normal val<CR>
-
-
-" custom text object indent
-onoremap <silent>ai :<C-U>cal <SID>IndTxtObj(0)<CR>
-onoremap <silent>ii :<C-U>cal <SID>IndTxtObj(1)<CR>
-vnoremap <silent>ai :<C-U>cal <SID>IndTxtObj(0)<CR><Esc>gv
-vnoremap <silent>ii :<C-U>cal <SID>IndTxtObj(1)<CR><Esc>gv
-
-function! s:IndTxtObj(inner)
-  let curline = line(".")
-  let lastline = line("$")
-  let i = indent(line(".")) - &shiftwidth * (v:count1 - 1)
-  let i = i < 0 ? 0 : i
-  if getline(".") !~ "^\\s*$"
-    let p = line(".") - 1
-    let nextblank = getline(p) =~ "^\\s*$"
-    while p > 0 && ((i == 0 && !nextblank) || (i > 0 && ((indent(p) >= i && !(nextblank && a:inner)) || (nextblank && !a:inner))))
-      -
-      let p = line(".") - 1
-      let nextblank = getline(p) =~ "^\\s*$"
-    endwhile
-    normal! 0V
-    call cursor(curline, 0)
-    let p = line(".") + 1
-    let nextblank = getline(p) =~ "^\\s*$"
-    while p <= lastline && ((i == 0 && !nextblank) || (i > 0 && ((indent(p) >= i && !(nextblank && a:inner)) || (nextblank && !a:inner))))
-      +
-      let p = line(".") + 1
-      let nextblank = getline(p) =~ "^\\s*$"
-    endwhile
-    normal! $
-  endif
-endfunction
-
-" easymotion mapping
-let g:EasyMotion_do_mapping = 0 " Disable default mappings
-let g:EasyMotion_smartcase = 1
-" nmap f <Plug>(easymotion-overwin-f)
-map <Leader>j <Plug>(easymotion-j)
-map <Leader>k <Plug>(easymotion-k)
-
 
 " Use `[g` and `]g` to navigate diagnostics
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
