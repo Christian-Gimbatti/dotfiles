@@ -31,6 +31,7 @@ Plug 'tpope/vim-surround'
 Plug 'mattn/emmet-vim'
 Plug 'stevearc/vim-arduino'
 Plug 'tpope/vim-repeat'
+Plug 'jiangmiao/auto-pairs'
 call plug#end()
 
 " GENERAL
