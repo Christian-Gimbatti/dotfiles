@@ -8,6 +8,8 @@ if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+
+  CocInstall coc-snippets
 endif
 
 call plug#begin('~/.vim/plugged')
@@ -32,6 +34,9 @@ Plug 'mattn/emmet-vim'
 Plug 'stevearc/vim-arduino'
 Plug 'tpope/vim-repeat'
 Plug 'jiangmiao/auto-pairs'
+
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 call plug#end()
 
 " GENERAL
@@ -48,6 +53,7 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o  
 filetype indent on      " load filetype-specific indent files
 set smartindent  
 set wildmenu            " visual autocomplete for command menu
+set wildignorecase
 set lazyredraw          " redraw only when we need to.
 set showmatch           " highlight matching [{()}]
 set ignorecase          " ignore case when searching
@@ -61,9 +67,14 @@ let NERDTreeMinimalUI = 1
 
 " KEYMAP
 let mapleader = ","
-let $FZF_DEFAULT_COMMAND = 'rg --files '
 set encoding=UTF-8
 set updatetime=300
+
+let $FZF_DEFAULT_COMMAND = 'rg --files '
+
+" general
+nnoremap <C-B> :Buffers<CR>
+nnoremap <C-G> :Gstatus<CR>
 
 " turn off search highlight
 nnoremap <leader><space> :nohlsearch<CR>
@@ -81,13 +92,14 @@ noremap <C-S-PageDown>  :+tabmove<CR>
 " line movement
 nnoremap <C-j> :move +1<CR>
 nnoremap <C-k> :move -2<CR>
-inoremap <C-j> <Esc>:m .+1<CR>==gi
-inoremap <C-k> <Esc>:m .-2<CR>==gi
+" inoremap <C-j> <Esc>:m .+1<CR>==gi
+" inoremap <C-k> <Esc>:m .-2<CR>==gi
 vnoremap <C-j> :m '>+1<CR>gv=gv
 vnoremap <C-k> :m '<-2<CR>gv=gv
 
 nmap <leader>* *cgn
 nnoremap <C-s> :w<CR>
+inoremap <C-s> <esc>:w<CR>
 
 
 " screen movement 
@@ -101,6 +113,9 @@ nnoremap <leader>L <C-W>L
 nnoremap <leader>J <C-W>J
 nnoremap <leader>K <C-W>K
 
+" map foward jump cause remapping of tab/c-i
+nnoremap <leader><c-O> <c-I>
+
 " tab indent
 nnoremap <Tab> >>_
 nnoremap <S-Tab> <<_
@@ -108,9 +123,9 @@ inoremap <S-Tab> <C-D>
 vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
 
-nnoremap ,hp :SignifyHunkDiff<CR>
+nnoremap <leader>hp :SignifyHunkDiff<CR>
 nnoremap = :SignifyHunkDiff<CR>
-nnoremap ,hu :SignifyHunkUndo<CR>
+nnoremap <leader>hu :SignifyHunkUndo<CR>
 cabbrev q <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'close' : 'q')<CR>
 
 
@@ -120,19 +135,13 @@ onoremap il :normal vil<CR>
 xnoremap al $o^
 onoremap al :normal val<CR>
 
-" Use `[g` and `]g` to navigate diagnostics
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
-
-" Remap keys for gotos
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
 autocmd ColorScheme * hi multiple_cursors_cursor term=reverse cterm=reverse gui=reverse
 autocmd CursorHold * silent call CocActionAsync('highlight')
-nmap <F2> <Plug>(coc-rename)
+
+
+let g:UltiSnipsExpandTrigger="<space>"
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
 " THEME
 color dracula
@@ -161,7 +170,31 @@ let g:indentLine_enabled = 1
 let g:indentLine_color_term = 239
 let g:indentLine_char_list = ['|', '¦', '┆', '┊']
 
+xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
 
+function! ExecuteMacroOverVisualRange()
+	echo "@".getcmdline()
+	execute ":'<,'>normal @".nr2char(getchar())
+endfunction
+
+
+
+
+
+" COC
+
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+nmap <F2> <Plug>(coc-rename)
+nmap <leader>rn <Plug>(coc-rename)
 
 " use <tab> for trigger completion and navigate to the next complete item
 function! s:check_back_space() abort
@@ -171,18 +204,33 @@ endfunction
 
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
+" Use <C-j> for jump to next placeholder, it's default of coc.nvim
+let g:coc_snippet_next = '<c-j>'
+
+" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
+let g:coc_snippet_prev = '<c-k>'
+imap <C-j> <Plug>(coc-snippets-expand-jump)
+let g:coc_snippet_next = '<tab>'
+
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
 " Use <c-space> to trigger completion.
 inoremap <silent><expr> <c-space> coc#refresh()
 
 inoremap <silent><expr> <Tab>
       \ pumvisible() ? "\<C-n>" :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
       \ <SID>check_back_space() ? "\<Tab>" :
       \ coc#refresh()
 
 
-xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
+" Create mappings for function text object, requires document symbols feature of languageserver.
+xmap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap if <Plug>(coc-funcobj-i)
+omap af <Plug>(coc-funcobj-a)
 
-function! ExecuteMacroOverVisualRange()
-  echo "@".getcmdline()
-  execute ":'<,'>normal @".nr2char(getchar())
-endfunction
+" Find symbol of current document
+nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+" Search workspace symbols
+nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
