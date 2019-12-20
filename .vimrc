@@ -103,18 +103,18 @@ inoremap <C-s> <esc>:w<CR>
 
 
 " screen movement 
-nnoremap <leader>h <C-W>h
-nnoremap <leader>l <C-W>l
-nnoremap <leader>j <C-W>j
-nnoremap <leader>k <C-W>k
+nnoremap <esc>h <C-W>h
+nnoremap <esc>l <C-W>l
+nnoremap <esc>j <C-W>j
+nnoremap <esc>k <C-W>k
 
-nnoremap <leader>H <C-W>H
-nnoremap <leader>L <C-W>L
-nnoremap <leader>J <C-W>J
-nnoremap <leader>K <C-W>K
+nnoremap <esc>H <C-W>H
+nnoremap <esc>L <C-W>L
+nnoremap <esc>J <C-W>J
+nnoremap <esc>K <C-W>K
 
 " map foward jump cause remapping of tab/c-i
-nnoremap <leader><c-O> <c-I>
+nnoremap <leader><c-o> <c-I>
 
 " tab indent
 nnoremap <Tab> >>_
