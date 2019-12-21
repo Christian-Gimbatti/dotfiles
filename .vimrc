@@ -37,17 +37,21 @@ Plug 'jiangmiao/auto-pairs'
 
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
+Plug 'aquach/vim-http-client'
 call plug#end()
+
 
 " GENERAL
 set hidden
 set backup " tell vim where to put its backup files
 set backupdir=/tmp " tell vim where to put swap files
 set dir=/tmp
-set timeoutlen=1000        " speed vim up
+set timeoutlen=1000	       " speed vim up
 set ttimeoutlen=0          " https://stackoverflow.com/questions/37644682/why-is-vim-so-slow/37645334
 set ttyfast                " Rendering
 set tw=500
+set splitright
+set splitbelow
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o  " Disable Autocommenting
 
 filetype indent on      " load filetype-specific indent files
@@ -146,7 +150,7 @@ let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 " THEME
 color dracula
 
-:set termguicolors
+set termguicolors
 set signcolumn=yes
 syntax on
 set tabstop=4
