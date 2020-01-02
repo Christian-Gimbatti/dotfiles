@@ -34,6 +34,7 @@ Plug 'mattn/emmet-vim'
 Plug 'stevearc/vim-arduino'
 Plug 'tpope/vim-repeat'
 Plug 'jiangmiao/auto-pairs'
+Plug 'aquach/vim-http-client'
 
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
@@ -107,6 +108,16 @@ inoremap <C-s> <esc>:w<CR>
 
 
 " screen movement 
+nnoremap <leader>h <C-W>h
+nnoremap <leader>l <C-W>l
+nnoremap <leader>j <C-W>j
+nnoremap <leader>k <C-W>k
+
+nnoremap <leader>H <C-W>H
+nnoremap <leader>L <C-W>L
+nnoremap <leader>J <C-W>J
+nnoremap <leader>K <C-W>K
+
 nnoremap <esc>h <C-W>h
 nnoremap <esc>l <C-W>l
 nnoremap <esc>j <C-W>j
