@@ -1,0 +1,20 @@
+#!/bin/bash
+
+if [ ! -f "/tmp/value.dat" ] ; then
+  version=0
+else
+  version=`cat /tmp/value.dat`
+fi
+
+case $BLOCK_BUTTON in
+1) version=$(if [ $version -eq 1 ]; then echo 0; else echo 1; fi) && echo $version  > /tmp/value.dat ;; # left click
+esac
+
+
+if [ $version = 0 ]; then
+	echo $(date '+%a %H:%M %p')
+else
+	echo $(date '+%a %d-%m-%y %H:%M %p')
+fi
+
+exit 0
