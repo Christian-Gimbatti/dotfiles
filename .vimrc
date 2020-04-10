@@ -12,9 +12,9 @@ if empty(glob('~/.vim/autoload/plug.vim'))
   CocInstall coc-snippets
 endif
 
-call plug#begin('~/.vim/plugged')
-" Plug 'sheerun/vim-polyglot'
+let g:vimwiki_map_prefix = '<Leader><Leader>'
 
+call plug#begin('~/.vim/plugged')
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'Yggdroot/indentLine'
 Plug 'vim-scripts/argtextobj.vim'
@@ -28,17 +28,19 @@ Plug 'https://github.com/BurntSushi/ripgrep'
 Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-fugitive' "Git tools
 Plug 'mhinz/vim-signify'
-Plug 'terryma/vim-multiple-cursors'
+" Plug 'terryma/vim-multiple-cursors'
 Plug 'tpope/vim-surround'
 Plug 'mattn/emmet-vim'
 Plug 'stevearc/vim-arduino'
 Plug 'tpope/vim-repeat'
 Plug 'jiangmiao/auto-pairs'
 Plug 'aquach/vim-http-client'
+Plug 'luochen1990/rainbow'
 
 Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
-Plug 'aquach/vim-http-client'
+" Plug 'honza/vim-snippets'
+Plug 'itchyny/lightline.vim'
+Plug 'vimwiki/vimwiki'
 call plug#end()
 
 
@@ -62,24 +64,63 @@ set wildignorecase
 set lazyredraw          " redraw only when we need to.
 set showmatch           " highlight matching [{()}]
 set ignorecase          " ignore case when searching
+set smartcase           " if searching with Uppercase => ignorecase
 set incsearch           " search as characters are entered
 set hlsearch            " highlight matches
 set clipboard=unnamedplus
+set laststatus=2 "for lightline
+set noshowmode
+let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
+let g:lightline = {
+      \ 'colorscheme': 'darcula',
+      \ }
 
 let NERDTreeQuitOnOpen = 1
 let NERDTreeMinimalUI = 1
 
 
-" KEYMAP
+" KEYMAP GENERAL
 let mapleader = ","
+let maplocalleader = "."
 set encoding=UTF-8
 set updatetime=300
 
 let $FZF_DEFAULT_COMMAND = 'rg --files '
 
-" general
-nnoremap <C-B> :Buffers<CR>
-nnoremap <C-G> :Gstatus<CR>
+nnoremap <leader>w :w<CR>
+nnoremap <leader>q :q<CR>
+nnoremap <leader>B :b#<CR>
+nnoremap <leader>b :Buffers<CR>
+nnoremap <C-g> :Gstatus<CR>
+nnoremap <C-h> H
+nnoremap <C-l> L
+nnoremap <leader>j J
+nnoremap <leader>k K
+nnoremap H ^
+nnoremap L $
+nnoremap K <C-u>
+nnoremap J <C-d>
+nnoremap Y Y$
+nnoremap U <C-r>
+nnoremap <leader>f :Rg 
+nnoremap Q @q
+nnoremap <leader>t :tabnew<cr>
+nnoremap <leader>v :vsplit<cr>
+if has("nvim")
+  au! TermOpen * tnoremap <Esc> <c-\><c-n>
+  au! FileType fzf tunmap <Esc>
+endif
+cnoremap <C-j> <Down>
+cnoremap <C-k> <Up>
+cnoremap <C-p> <C-r>"
+let g:http_client_bind_hotkey=0
+
+function! Snip()
+	execute(":vsplit ~/.vim/UltiSnips/".&filetype.".snippets")
+endfunction
+command! Ve execute ":edit ~/.vimrc"
+command! Vs execute ":source ~/.vimrc"
+command! Snip call Snip()
 
 " turn off search highlight
 nnoremap <leader><space> :nohlsearch<CR>
@@ -105,31 +146,47 @@ vnoremap <C-k> :m '<-2<CR>gv=gv
 nmap <leader>* *cgn
 nnoremap <C-s> :w<CR>
 inoremap <C-s> <esc>:w<CR>
+vnoremap <C-s> <esc>:w<CR>
 
 
 " screen movement 
-nnoremap <leader>h <C-W>h
-nnoremap <leader>l <C-W>l
-nnoremap <leader>j <C-W>j
-nnoremap <leader>k <C-W>k
+" nnoremap <leader>h <C-W>h
+" nnoremap <leader>l <C-W>l
+" nnoremap <leader>j <C-W>j
+" nnoremap <leader>k <C-W>k
+"
+" nnoremap <leader>H <C-W>H
+" nnoremap <leader>L <C-W>L
+" nnoremap <leader>J <C-W>J
+" nnoremap <leader>K <C-W>K
 
-nnoremap <leader>H <C-W>H
-nnoremap <leader>L <C-W>L
-nnoremap <leader>J <C-W>J
-nnoremap <leader>K <C-W>K
+if has("nvim")
+	nnoremap <M-h> <C-W>h
+	nnoremap <M-l> <C-W>l
+	nnoremap <M-j> <C-W>j
+	nnoremap <M-k> <C-W>k
 
-nnoremap <esc>h <C-W>h
-nnoremap <esc>l <C-W>l
-nnoremap <esc>j <C-W>j
-nnoremap <esc>k <C-W>k
+	nnoremap <M-H> <C-W>H
+	nnoremap <M-L> <C-W>L
+	nnoremap <M-J> <C-W>J
+	nnoremap <M-K> <C-W>K
+else
+	nnoremap <esc>h <C-W>h
+	nnoremap <esc>l <C-W>l
+	nnoremap <esc>j <C-W>j
+	nnoremap <esc>k <C-W>k
 
-nnoremap <esc>H <C-W>H
-nnoremap <esc>L <C-W>L
-nnoremap <esc>J <C-W>J
-nnoremap <esc>K <C-W>K
+	nnoremap <esc>H <C-W>H
+	nnoremap <esc>L <C-W>L
+	nnoremap <esc>J <C-W>J
+	nnoremap <esc>K <C-W>K
+endif
+
 
 " map foward jump cause remapping of tab/c-i
 nnoremap <leader><c-o> <c-I>
+
+autocmd FileType http nnoremap <buffer> <localleader>tt :HTTPClientDoRequest<CR>
 
 " tab indent
 nnoremap <Tab> >>_
@@ -154,7 +211,7 @@ autocmd ColorScheme * hi multiple_cursors_cursor term=reverse cterm=reverse gui=
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 
-let g:UltiSnipsExpandTrigger="<space>"
+let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
@@ -194,8 +251,6 @@ endfunction
 
 
 
-
-
 " COC
 
 " Use `[g` and `]g` to navigate diagnostics
@@ -221,7 +276,6 @@ inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 " Use <C-j> for jump to next placeholder, it's default of coc.nvim
 let g:coc_snippet_next = '<c-j>'
-
 " Use <C-k> for jump to previous placeholder, it's default of coc.nvim
 let g:coc_snippet_prev = '<c-k>'
 imap <C-j> <Plug>(coc-snippets-expand-jump)
@@ -229,8 +283,11 @@ let g:coc_snippet_next = '<tab>'
 
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
-" Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+set shortmess+=c
+
+" Use <c-j> to trigger completion.
+inoremap <silent><expr> <c-j> coc#refresh()
 
 inoremap <silent><expr> <Tab>
       \ pumvisible() ? "\<C-n>" :
@@ -249,3 +306,18 @@ omap af <Plug>(coc-funcobj-a)
 nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
 " Search workspace symbols
 nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+
+
+" makes window resizing mappings smoother
+nmap          <C-W>+     <C-W>+<SID>ws
+nmap          <C-W>-     <C-W>-<SID>ws
+nn <script>   <SID>ws+   <C-W>+<SID>ws
+nn <script>   <SID>ws-   <C-W>-<SID>ws
+
+nmap          <C-W>>     <C-W>><SID>ws
+nmap          <C-W><     <C-W><<SID>ws
+nn <script>   <SID>ws>   <C-W>><SID>ws
+nn <script>   <SID>ws<   <C-W><<SID>ws
+
+nmap          <SID>ws    <Nop>
+
